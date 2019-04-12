@@ -80,6 +80,14 @@ public class Main {
                     return;
                 }
 
+                String jsonText = "";
+
+                for (String s : hooks.read()) {
+                    jsonText = jsonText + s + "\n";
+                }
+
+                JSONArray array = new JSONArray(jsonText);
+
                 Files.walkFileTree(new File(path).toPath(), new FileVisitor<Path>() {
                     @Override
                     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
@@ -90,7 +98,8 @@ public class Main {
                     public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
                         File file = path.toFile();
                         if (file.getName().contains(".smali")) {
-                            replaceWithJSON(file, hooks);
+                            replaceMethodWithJSON(file, array);
+                            replaceClassWithJSON(file, array);
                         }
                         return FileVisitResult.CONTINUE;
                     }
@@ -146,18 +155,11 @@ public class Main {
         }
     }
 
-    private static void replaceWithJSON(File file, ClassFile json) {
+    private static void replaceClassWithJSON(File file, JSONArray array) {
         if (file.isDirectory())
             return;
 
-        String jsonText = "";
-
-        for (String s : json.read()) {
-            jsonText = jsonText + s + "\n";
-        }
-
         try {
-            JSONArray array = new JSONArray(jsonText);
             for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.getJSONObject(i);
 
@@ -170,10 +172,26 @@ public class Main {
 
                     if (file.getAbsolutePath().contains(object.getString("old_name"))) {
                         System.out.println("file found at: " + file.getAbsolutePath());
-                        file.renameTo(new File(file.getAbsolutePath().replace(object.getString("old_name"), object.getString("new_name"))));
+                        File newFile = new File(file.getAbsolutePath().replace(object.getString("old_name"), object.getString("new_name")));
+                        file.renameTo(newFile);
                     }
 
-                } else if (object.getString("type").equals("method")){
+                }
+            }
+        } catch (Exception e){
+            System.err.println(e.getLocalizedMessage());
+        }
+    }
+
+    private static void replaceMethodWithJSON(File file, JSONArray array){
+        if (file.isDirectory())
+            return;
+
+        try {
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject object = array.getJSONObject(i);
+
+                if (object.getString("type").equals("method")){
                     Map<String, String> map = new HashMap<>();
                     map.put(object.getString("path2") + ";->" + object.getString("method"),
                             object.getString("path2") + ";->" + object.getString("new_method"));
