@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="tosterMover_main:jar">
+  <artifact type="jar" name="deobfuscator:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/tosterMover_main_jar</output-path>
     <root id="archive" name="tosterMover_main.jar">
       <element id="module-output" name="tosterMover_main" />

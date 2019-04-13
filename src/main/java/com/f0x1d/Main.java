@@ -170,9 +170,9 @@ public class Main {
 
                     Replacer.replace(new ClassFile(file.getAbsolutePath()), map);
 
-                    if (file.getAbsolutePath().contains(object.getString("old_name"))) {
+                    if (file.getAbsolutePath().contains(smaliPathToNormal(object.getString("target")))) {
                         System.out.println("file found at: " + file.getAbsolutePath());
-                        File newFile = new File(file.getAbsolutePath().replace(object.getString("old_name"), object.getString("new_name")));
+                        File newFile = new File(file.getAbsolutePath().replace(smaliPathToNormal(object.getString("target")), smaliPathToNormal(object.getString("replace"))));
                         file.renameTo(newFile);
                     }
 
@@ -193,8 +193,8 @@ public class Main {
 
                 if (object.getString("type").equals("method")){
                     Map<String, String> map = new HashMap<>();
-                    map.put(object.getString("path2") + ";->" + object.getString("method"),
-                            object.getString("path2") + ";->" + object.getString("new_method"));
+                    map.put(normalPathToSmali(object.getString("path")) + ";->" + object.getString("method"),
+                            normalPathToSmali(object.getString("path")) + ";->" + object.getString("new_method"));
 
                     Replacer.replace(new ClassFile(file.getAbsolutePath()), map);
 
@@ -216,6 +216,14 @@ public class Main {
         } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
         }
+    }
+
+    private static String smaliPathToNormal(String smaliPath){
+        return smaliPath.replace("L", "").replace("/", "\\");
+    }
+
+    private static String normalPathToSmali(String normalPath){
+        return "L" + normalPath.replace("\\", "/").replace(".smali", "");
     }
 
 }
