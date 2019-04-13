@@ -13,5 +13,5 @@ Note, that method's deobfuscation is before class's deobfuscation!
 
 
 Example of database:<br>
-`[{"type":"class", "target":"Lcom/vk/auth/g", "replace":"Lcom/vk/auth/VKAccount", "old_name":"smali_classes2\\com\\vk\\auth\\g", "new_name":"smali_classes2\\com\\vk\\auth\\VKAccount"},
-{"type":"method", "method":"B(Z)V", "path":"com\\vk\\auth\\g.smali", "path2":"Lcom/vk/auth/g", "new_method":"flex(Z)V"}]`
+`[{"type":"class", "target":"Lcom/vk/auth/g", "replace":"Lcom/vk/auth/VKAccount"},
+{"type":"method", "method":"B(Z)V", "path":"com\\vk\\auth\\g.smali", "new_method":"flex(Z)V"}]`
